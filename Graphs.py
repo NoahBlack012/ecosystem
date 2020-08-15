@@ -6,3 +6,6 @@ class graphs:
         pass
     def plot(self, population):
         pass
+
+if __name__ == '__main__':
+    g = graphs()
