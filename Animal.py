@@ -8,6 +8,7 @@ class animal:
         self.speed = speed
         self.hunger = 100
         self.food_near = []
+        self.searching_for_food = True
 
     def find_food(self, board):
         self.food_near = []
@@ -16,9 +17,12 @@ class animal:
         area = [x_area, y_area]
         for x in x_area:
             for y in y_area:
-                if board[x][y] == 1:
-                    self.food_near.append((x, y))
-        return self.food_near
+                try:
+                    if board[x][y] == 1:
+                        self.food_near.append((x, y))
+                except IndexError as e:
+                    pass
+        #return self.food_near
 
     def end_found(self, moves, x, y, foodx, foody):
         for move in moves:

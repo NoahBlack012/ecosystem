@@ -13,10 +13,12 @@ class sim:
         self.cycles = 0
         self.population = 0
         self.animals = []
-        self.range = 20
+        self.range = 5
         self.speed = 5
         self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
         self.foods = []
+        self.REPETITIONS = 100
+        self.cycles = 0
 
     def create_food(self, range):
         self.foods = []
@@ -24,8 +26,8 @@ class sim:
         for i in range:
             for food_item in self.foods:
                 restricted_spots[food_item.x] = food_item.y
-            x = random.randint(0, self.WIDTH - 1)
-            y = random.randint(0, self.HEIGHT - 1)
+            x = random.randint(0, self.WIDTH - 2)
+            y = random.randint(0, self.HEIGHT - 2)
             for j in restricted_spots:
                 if x == j:
                     x += 1
@@ -51,8 +53,8 @@ class sim:
             self.animals.append(animal(x, y, self.range, self.speed))
 
     def run(self):
-        self.create_initial_population(range(100))
-        while True:
+        self.create_initial_population(range(50))
+        while self.cycles < self.REPETITIONS:
             self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
             food_needed = range(100 - len(self.foods))
             self.create_food(food_needed)
@@ -64,10 +66,9 @@ class sim:
                     if i == 1:
                         food += 1
             for animal in self.animals:
-                print (animal.find_food(self.board))
+                if animal.searching_for_food:
+                    animal.find_food(self.board)
             self.cycles += 1
-            if self.cycles > 100:
-                break
 
 if __name__ == '__main__':
     s = sim()
