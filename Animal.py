@@ -9,6 +9,16 @@ class animal:
         self.hunger = 100
         self.food_near = []
         self.searching_for_food = True
+        self.food_eaten = False
+
+    def eat(self, foods):
+        self.food_eaten = False
+        for food in self.food_near:
+            if self.x == food[0] and self.y == food[1]:
+                foods.pop(foods.index(food))
+                self.food_eaten = True
+                break
+        return foods
 
     def find_food(self, board):
         self.food_near = []

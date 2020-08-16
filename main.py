@@ -10,6 +10,7 @@ class sim:
     def __init__(self):
         self.WIDTH = 100
         self.HEIGHT = 100
+        self.REPETITIONS = 100
         self.cycles = 0
         self.population = 0
         self.animals = []
@@ -17,7 +18,6 @@ class sim:
         self.speed = 5
         self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
         self.foods = []
-        self.REPETITIONS = 100
         self.cycles = 0
 
     def create_food(self, range):
@@ -68,6 +68,11 @@ class sim:
             for animal in self.animals:
                 if animal.searching_for_food:
                     animal.find_food(self.board)
+                else:
+                    pass
+                    #self.foods = animal.eat(self.foods)
+                    #if not animal.food_eaten:
+                        #animal.move_to_food
             self.cycles += 1
 
 if __name__ == '__main__':
