@@ -3,13 +3,19 @@ from Animal import animal
 from Graphs import graphs
 import numpy as np
 import random
-import queue
+from Nqueue import nqueue
 
+##############################################
+"""
+Allow food to be removed from food array when it is
+eaten
+"""
+##############################################
 class sim:
     """Class to run the simulation"""
     def __init__(self):
-        self.WIDTH = 100
-        self.HEIGHT = 100
+        self.WIDTH = 20
+        self.HEIGHT = 20
         self.REPETITIONS = 100
         self.cycles = 0
         self.population = 0
@@ -21,7 +27,7 @@ class sim:
         self.cycles = 0
 
     def create_food(self, range):
-        self.foods = []
+        print ("creating food")
         restricted_spots = {}
         for i in range:
             for food_item in self.foods:
@@ -38,6 +44,7 @@ class sim:
                 if y > self.HEIGHT - 1:
                     y = 1
             self.foods.append(food(x, y))
+        print ("done")
 
     def create_initial_population(self, pop):
         restricted_spots = {}
@@ -53,11 +60,15 @@ class sim:
             self.animals.append(animal(x, y, self.range, self.speed))
 
     def run(self):
-        self.create_initial_population(range(50))
+        self.create_initial_population(range(5))
+        self.create_food(range(50))
         while self.cycles < self.REPETITIONS:
+            print (f"Population: {len(self.animals)}")
+            if len(self.animals) < 1:
+                break
             self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
-            food_needed = range(100 - len(self.foods))
-            self.create_food(food_needed)
+            food_needed = range(20 - len(self.foods))
+            #self.create_food(food_needed)
             for food in self.foods:
                 self.board[food.x][food.y] = 1
             food = 0
@@ -65,15 +76,33 @@ class sim:
                 for i in j:
                     if i == 1:
                         food += 1
+
+            new_animal_array = []
+            ###Using the animals###
             for animal in self.animals:
+                ###Find food###
                 if animal.searching_for_food:
+                    print ("Searching...")
                     animal.find_food(self.board)
+                    if animal.food_near != []:
+                        animal.find_best_path(animal.food_near[0],  animal.food_near[1])
+                    else:
+                        animal.move_queue = nqueue()
+                        animal.move_queue.add(random.choice(["L", "R", "U", "D"]))
+                        animal.searching_for_food = False
                 else:
-                    pass
-                    #self.foods = animal.eat(self.foods)
-                    #if not animal.food_eaten:
-                        #animal.move_to_food
+                    self.foods = animal.eat(self.foods)
+                    animal.move_to_food()
+
+                animal.hunger -= 1
+                new_animal_array.append(animal)
+                if animal.hunger <= 0:
+                    print (f"Rip {animal}")
+                    new_animal_array.pop(new_animal_array.index(animal))
+            ############################################################################
+            self.animals = new_animal_array
             self.cycles += 1
+
 
 if __name__ == '__main__':
     s = sim()
