@@ -5,12 +5,6 @@ import numpy as np
 import random
 from Nqueue import nqueue
 
-##############################################
-"""
-Allow food to be removed from food array when it is
-eaten
-"""
-##############################################
 class sim:
     """Class to run the simulation"""
     def __init__(self):
@@ -21,10 +15,10 @@ class sim:
         self.population = 0
         self.animals = []
         self.range = 5
-        self.speed = 5
         self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
         self.foods = []
         self.cycles = 0
+        self.restricted_spots = {}
 
     def create_food(self, range):
         print ("creating food")
@@ -32,6 +26,9 @@ class sim:
         for i in range:
             for food_item in self.foods:
                 restricted_spots[food_item.x] = food_item.y
+
+            for animal in self.animals:
+                restricted_spots[animal.x] = animal.y
             x = random.randint(0, self.WIDTH - 2)
             y = random.randint(0, self.HEIGHT - 2)
             for j in restricted_spots:
@@ -57,51 +54,92 @@ class sim:
                 if y == restricted_spots[j]:
                     y += 1
             restricted_spots[x] = y
-            self.animals.append(animal(x, y, self.range, self.speed))
+            speed = random.randint(1, 5)
+            self.animals.append(animal(x, y, self.range, speed))
+
+    def get_restricted_spots(self):
+        self.restricted_spots = {}
+        for food_item in self.foods:
+            self.restricted_spots[food_item.x] = food_item.y
+
+        for animal in self.animals:
+            self.restricted_spots[animal.x] = animal.y
 
     def run(self):
+        #Create initial assets for simulation
         self.create_initial_population(range(5))
         self.create_food(range(50))
+
         while self.cycles < self.REPETITIONS:
-            print (f"Population: {len(self.animals)}")
+            print (f"📘📘📘Population: {len(self.animals)}")
+            print (f"📘📘📘Food: {len(self.foods)}")
+
+            #If there are no more animals
             if len(self.animals) < 1:
                 break
+
+            ####################Create the board###########################
             self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
-            food_needed = range(20 - len(self.foods))
-            #self.create_food(food_needed)
+            if len(self.foods) < 30:
+                food_needed = range(49 - len(self.foods))
+                self.create_food(food_needed)
+                for food in self.foods:
+                    self.board[food.x][food.y] = 1
+
+                #Get animals to find new food when food is added
+                new_animal_array = []
+                for animal in self.animals:
+                    if not animal.food_near:
+                        animal.find_food(self.board)
             for food in self.foods:
                 self.board[food.x][food.y] = 1
             food = 0
-            for j in self.board:
-                for i in j:
-                    if i == 1:
-                        food += 1
+            # for j in self.board:
+            #     for i in j:
+            #         if i == 1:
+            #             food += 1
+
 
             new_animal_array = []
             ###Using the animals###
             for animal in self.animals:
                 ###Find food###
                 if animal.searching_for_food:
-                    print ("Searching...")
+                    print ("📔📔📔Searching for food")
                     animal.find_food(self.board)
                     if animal.food_near != []:
                         animal.find_best_path(animal.food_near[0],  animal.food_near[1])
                     else:
                         animal.move_queue = nqueue()
-                        animal.move_queue.add(random.choice(["L", "R", "U", "D"]))
-                        animal.searching_for_food = False
+                        for i in range(animal.speed):
+                            animal.move_queue.add(random.choice(["L", "R", "U", "D"]))
+                        animal.searching_for_food = True
+                        animal.move_to_food()
                 else:
-                    self.foods = animal.eat(self.foods)
+                    if animal.move_queue.get_q() == []:
+                        animal.searching_for_food = True
+
+                    #Get method to return index for food, then pop in main.py
+                    self.foods, animal.searching_for_food = animal.eat(self.foods)
                     animal.move_to_food()
+
+                if animal.hunger > 20:
+                    animal.hunger = 10
+                    self.get_restricted_spots()
+                    new_animal = animal.reproduce(self.restricted_spots, self.WIDTH)
+                    print ("reproduce")
+                    new_animal.find_food(self.board)
+                    new_animal_array.append(new_animal)
 
                 animal.hunger -= 1
                 new_animal_array.append(animal)
                 if animal.hunger <= 0:
-                    print (f"Rip {animal}")
+                    print (f"📕📕📕Rip {animal}")
                     new_animal_array.pop(new_animal_array.index(animal))
             ############################################################################
             self.animals = new_animal_array
             self.cycles += 1
+            print (self.cycles)
 
 
 if __name__ == '__main__':

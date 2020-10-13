@@ -10,46 +10,108 @@ class animal:
         self.hunger = 10
         self.food_near = []
         self.searching_for_food = True
-        self.move_queue = ""
+        self.move_queue = nqueue()
         self.moves = ""
 
     def move_to_food(self):
-        moves = self.move_queue.de_q()
-        new_q = moves[1:]
-        try:
-            move = moves[0]
-        except IndexError as e:
-            move = random.choice(["U", "D", "L", "R"])
-            self.searching_for_food = True
-        self.move_queue = nqueue()
-        self.move_queue.add(new_q)
+        #Boolean for determining if animal has found any food
+        has_path = False
+        if self.move_queue:
+            #If the animal has a queue, they have found a food
+            has_path = True
 
-        if move == "U":
-            self.y += 1
-        elif move == "D":
-            self.y -= 1
-        elif move == "L":
-            self.x -= 1
-        elif move == "R":
-            self.x += 1
+        moved = 0
+        for i in range(self.speed):
+            empty_queue = False
+            moves = self.move_queue.de_q()
+            try:
+                new_q = moves[1:]
+            except TypeError as e:
+                if not has_path:
+                    self.searching_for_food = True
+            try:
+                try:
+                    move = moves[0]
+                except TypeError as t:
+                    empty_queue = True
+            except IndexError as e:
+                empty_queue = True
+
+            if empty_queue:
+                """
+                If the animal has a path set, an empty queue means
+                they have reached their food and should exit
+                """
+                if has_path:
+                    break
+                move = random.choice(["U", "D", "L", "R"])
+                self.searching_for_food = True
+
+            self.move_queue = nqueue()
+            self.move_queue.add(new_q)
+
+            if move == "U":
+                self.y += 1
+            elif move == "D":
+                self.y -= 1
+            elif move == "L":
+                self.x -= 1
+            elif move == "R":
+                self.x += 1
+
+    def reproduce(self, restricted_spots, length):
+        x_interval = 1
+        y_interval = 0
+        while True:
+            new_x = self.x + x_interval
+            new_y = self.y + y_interval
+            if new_x > length:
+                new_x = 1
+            if new_y > length:
+                new_y = 1
+            try:
+                if restricted_spots[new_x] != new_y:
+                    break
+            except KeyError as e:
+                break
+            if x_interval % 2 == 0:
+                x_interval += 1
+            else:
+                y_interval += 1
+        speed_rand = random.randint(1, 20)
+        if speed_rand == 1:
+            speed = random.randint(1, 5)
+        else:
+            speed = self.speed
+
+        range_rand = random.randint(1, 20)
+        if range_rand == 1:
+            range = random.randint(5, 10)
+        else:
+            range = self.range
+        new_animal = animal(new_x, new_y, range, speed)
+        return new_animal
+
+
 
     def eat(self, foods):
         x, y = -1, -1
         for food in self.food_near:
             if food[0] == self.x and food[1] == self.y:
-                print (f"{self} yum x: {self.x} y:{self.y}")
+                print (f"📗📗📗{self} yum x: {self.x} y:{self.y}")
                 self.searching_for_food = True
-                self.hunger += 5
+                self.hunger += 10
                 x = food[0]
                 y = food[1]
-                self.food_near.remove(food)
+                self.food_near.pop(self.food_near.index(food))
+                self.move_queue = nqueue()
                 break
         new_foods = []
         for food in foods:
             if food.x != x and food.y != y:
                 new_foods.append(food)
 
-        return new_foods
+        return new_foods, self.searching_for_food
 
 
     def find_food(self, board):
@@ -112,7 +174,7 @@ class animal:
             if self.end_found(put, self.x, self.y, foodx, foody):
                 break
             comps += 1
-            if comps > 20000:
+            if comps > 30000:
                 break
         q = q.get_q()[0]
         new_q = nqueue()
