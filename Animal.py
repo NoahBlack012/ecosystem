@@ -44,6 +44,7 @@ class animal:
                 """
                 if has_path:
                     break
+
                 move = random.choice(["U", "D", "L", "R"])
                 self.searching_for_food = True
 
@@ -92,8 +93,6 @@ class animal:
         new_animal = animal(new_x, new_y, range, speed)
         return new_animal
 
-
-
     def eat(self, foods):
         x, y = -1, -1
         for food in self.food_near:
@@ -104,15 +103,15 @@ class animal:
                 x = food[0]
                 y = food[1]
                 self.food_near.pop(self.food_near.index(food))
+                self.food_near = []
                 self.move_queue = nqueue()
                 break
         new_foods = []
         for food in foods:
-            if food.x != x and food.y != y:
+            if food.x != x or food.y != y:#Fix to error where too much food gets removed
                 new_foods.append(food)
 
         return new_foods, self.searching_for_food
-
 
     def find_food(self, board):
         self.searching_for_food = False

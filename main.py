@@ -14,11 +14,11 @@ class sim:
         self.cycles = 0
         self.population = 0
         self.animals = []
-        self.range = 5
         self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
         self.foods = []
         self.cycles = 0
         self.restricted_spots = {}
+        self.datasets = []
 
     def create_food(self, range):
         print ("creating food")
@@ -55,7 +55,8 @@ class sim:
                     y += 1
             restricted_spots[x] = y
             speed = random.randint(1, 5)
-            self.animals.append(animal(x, y, self.range, speed))
+            range = random.randint(5, 10)
+            self.animals.append(animal(x, y, range, speed))
 
     def get_restricted_spots(self):
         self.restricted_spots = {}
@@ -80,7 +81,7 @@ class sim:
 
             ####################Create the board###########################
             self.board = np.zeros((self.WIDTH, self.HEIGHT), dtype=int)
-            if len(self.foods) < 30:
+            if len(self.foods) < 40:
                 food_needed = range(49 - len(self.foods))
                 self.create_food(food_needed)
                 for food in self.foods:
@@ -108,7 +109,7 @@ class sim:
                     print ("📔📔📔Searching for food")
                     animal.find_food(self.board)
                     if animal.food_near != []:
-                        animal.find_best_path(animal.food_near[0],  animal.food_near[1])
+                        animal.find_best_path(animal.food_near[0], animal.food_near[1])
                     else:
                         animal.move_queue = nqueue()
                         for i in range(animal.speed):
@@ -141,7 +142,23 @@ class sim:
             self.cycles += 1
             print (self.cycles)
 
+            animals_data = {}
+            animals_data["speed"] = []
+            animals_data["range"] = []
+            for animal in self.animals:
+                animals_data["speed"].append(animal.speed)
+                animals_data["range"].append(animal.range)
+
+            data = {
+                "cycle": self.cycles,
+                "pop": len(self.animals),
+                "animals": animals_data
+            }
+            self.datasets.append(data)
+
 
 if __name__ == '__main__':
     s = sim()
     s.run()
+    for data in s.datasets:
+        print (data)
