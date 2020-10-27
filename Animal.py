@@ -95,14 +95,13 @@ class animal:
 
     def eat(self, foods):
         x, y = -1, -1
-        for food in self.food_near:
-            if food[0] == self.x and food[1] == self.y:
+        for food in foods:
+            if food.x == self.x and food.y == self.y:
                 print (f"📗📗📗{self} yum x: {self.x} y:{self.y}")
                 self.searching_for_food = True
                 self.hunger += 10
-                x = food[0]
-                y = food[1]
-                self.food_near.pop(self.food_near.index(food))
+                x = food.x
+                y = food.y
                 self.food_near = []
                 self.move_queue = nqueue()
                 break
