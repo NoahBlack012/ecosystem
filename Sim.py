@@ -127,7 +127,7 @@ class sim:
                 if animal.hunger > 20:
                     animal.hunger = 10
                     self.get_restricted_spots()
-                    new_animal = animal.reproduce(self.restricted_spots, self.WIDTH)
+                    new_animal = animal.reproduce(self.restricted_spots, self.WIDTH, len(self.animals))
                     print ("reproduce")
                     new_animal.find_food(self.board)
                     new_animal_array.append(new_animal)
