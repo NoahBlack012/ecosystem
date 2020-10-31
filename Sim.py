@@ -6,10 +6,11 @@ from Nqueue import nqueue
 
 class sim:
     """Class to run the simulation"""
-    def __init__(self):
+    def __init__(self, pop, reps):
         self.WIDTH = 20
         self.HEIGHT = 20
-        self.REPETITIONS = 100
+        self.REPETITIONS = reps
+        self.initial_pop = pop
         self.cycles = 0
         self.population = 0
         self.animals = []
@@ -68,7 +69,7 @@ class sim:
 
     def run(self):
         #Create initial assets for simulation
-        self.create_initial_population(range(10))
+        self.create_initial_population(range(self.initial_pop))
         self.create_food(range(self.food_amount))
 
         while self.cycles < self.REPETITIONS:
@@ -158,7 +159,7 @@ class sim:
 
 
 if __name__ == '__main__':
-    s = sim()
+    s = sim(10, 100)
     s.run()
     for data in s.datasets:
         print (data)
