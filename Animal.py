@@ -60,7 +60,7 @@ class animal:
             elif move == "R":
                 self.x += 1
 
-    def reproduce(self, restricted_spots, length):
+    def reproduce(self, restricted_spots, length, population):
         x_interval = 1
         y_interval = 0
         while True:
@@ -79,13 +79,19 @@ class animal:
                 x_interval += 1
             else:
                 y_interval += 1
-        speed_rand = random.randint(1, 20)
+        if population > 10:
+            mutation_chance = 50
+        elif population < 7 and population > 3:
+            mutation_chance = 20
+        else:
+            mutation_chance = 5
+        speed_rand = random.randint(1, mutation_chance)
         if speed_rand == 1:
             speed = random.randint(1, 5)
         else:
             speed = self.speed
 
-        range_rand = random.randint(1, 20)
+        range_rand = random.randint(1, mutation_chance)
         if range_rand == 1:
             range = random.randint(5, 10)
         else:
