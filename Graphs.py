@@ -14,33 +14,46 @@ EX
 class graphs:
     """Class to manage graphing the simulation"""
     def __init__(self):
-        self.fig, self.ax = plt.subplots(figsize=(5, 5))
-        self.ax.set_xlabel("Speed")
-        self.ax.set_ylabel("Range")
-        self.ax.set_xlim(1, 11)
-        self.ax.set_ylim(1, 11)
-        self.sim = sim(10, 100)
+        self.cycles = 100
+        self.sim = sim(15, self.cycles)
         print ("Running the simulation...")
         self.sim.run()
         print ("Simulation finished")
         self.data = self.sim.datasets
         self.data.pop()
 
-    def plot(self):
+    def plot_animal_attributes(self):
         """
-        Plot the graphs
+        Plot animal attributes
         """
+        self.animal_fig, self.animal_ax = plt.subplots(figsize=(5, 5))
+        self.animal_ax.set_xlabel("Speed")
+        self.animal_ax.set_ylabel("Range")
+        self.animal_ax.set_xlim(-1, 11)
+        self.animal_ax.set_ylim(-1, 11)
         #Append speed and range to arrays above in animate functions
         #Ex: https://stackoverflow.com/questions/42722691/python-matplotlib-update-scatter-plot-from-a-function
         x_data = []
         y_data = []
-        scatter = self.ax.scatter(0, 0)
+        sizes = []
+
+        scatter = self.animal_ax.scatter(0, 0, c="#ffffff")
+
+        #Create (x, y) coordinates
         def create_coordinates(x, y):
-            points = []
+            coordinates = []
             for n, x_coor in enumerate(x):
                 coor = (x_coor, y[n])
-                points.append(coor)
-            return points
+                coordinates.append(coor)
+            return coordinates
+
+        #Create sizes for points
+        def create_sizes(coordinates):
+            sizes = []
+            for point in coordinates:
+                size = coordinates.count(point) * 80
+                sizes.append(size)
+            return sizes
 
         def animate(i):
             data = self.data[i]
@@ -48,6 +61,8 @@ class graphs:
             y_data = data["animals"]["range"]
             plt.title(f"Cycle: {data['cycle']}      Population: {data['pop']}")
             points = create_coordinates(x_data, y_data)
+            sizes = create_sizes(points)
+            scatter = self.animal_ax.scatter(x_data, y_data, s=sizes, c="#ff0000")
             try:
                 scatter.set_offsets(points)
             except ValueError:
@@ -55,43 +70,66 @@ class graphs:
             return scatter,
 
         line_animation = animation.FuncAnimation(
-            self.fig, animate, frames=np.arange(0, len(self.data), 1), interval=0.1*1000,
+            self.animal_fig, animate, frames=np.arange(0, len(self.data), 1), interval=0.05*1000,
             blit=True, save_count=len(self.data)
         )
 
-        writergif = animation.PillowWriter(fps=1)
+        writergif = animation.PillowWriter(fps=15)
         line_animation.save('graph.gif',writer=writergif)
+        plt.close(self.animal_fig)
 
-        plt.show()
+    def plot_population(self):
+        self.pop_fig, self.pop_ax = plt.subplots(figsize=(5, 5))
+        self.pop_ax.set_xlabel("Cycle")
+        self.pop_ax.set_ylabel("Population")
+        populations, cycles = [], []
+        for dataset in self.data:
+            populations.append(dataset['pop'])
+            cycles.append(dataset['cycle'])
 
-    def test(self):
-        fig, ax = plt.subplots()
-        ax.set_xlabel("Speed")
-        ax.set_ylabel("Range")
-        ax.set_xlim(0, 10)
-        ax.set_ylim(0, 10)
+        """
+        If the simulation ended when all the animals died,
+        Add zero to the population
+        """
+        if cycles[-1] + 1 < self.cycles:
+            populations.append(0)
+            cycles.append(cycles[-1]+1)
 
-        x_data = []
-        y_data = []
-        scatter = ax.scatter(0, 0)
+        self.pop_ax.plot(cycles, populations)
 
-        def create_coordinates(x, y):
-            points = []
-            for n, x_coor in enumerate(x):
-                coor = (x_coor, y[n])
-                points.append(coor)
-            return points
+        self.pop_fig.savefig("population.png")
+        plt.close(self.pop_fig)
 
-        def animate(i):
-            x_data = [random.randint(1, 10) for i in range(5)]
-            y_data = [random.randint(1, 10) for i in range(5)]
-            points = create_coordinates(x_data, y_data)
-            scatter.set_offsets(points)
-            return scatter,
 
-        ani = animation.FuncAnimation(fig, func=animate, frames=np.arange(0, 10, 0.1), interval=10)
-        plt.show()
+    # def test(self):
+    #     fig, ax = plt.subplots()
+    #     ax.set_xlabel("Speed")
+    #     ax.set_ylabel("Range")
+    #     ax.set_xlim(0, 10)
+    #     ax.set_ylim(0, 10)
+    #
+    #     x_data = []
+    #     y_data = []
+    #     scatter = ax.scatter(0, 0)
+    #
+    #     def create_coordinates(x, y):
+    #         points = []
+    #         for n, x_coor in enumerate(x):
+    #             coor = (x_coor, y[n])
+    #             points.append(coor)
+    #         return points
+    #
+    #     def animate(i):
+    #         x_data = [random.randint(1, 10) for i in range(5)]
+    #         y_data = [random.randint(1, 10) for i in range(5)]
+    #         points = create_coordinates(x_data, y_data)
+    #         scatter.set_offsets(points)
+    #         return scatter,
+    #
+    #     ani = animation.FuncAnimation(fig, func=animate, frames=np.arange(0, 10, 0.1), interval=10)
+    #     plt.show()
 
 if __name__ == '__main__':
     g = graphs()
-    g.plot()
+    g.plot_animal_attributes()
+    g.plot_population()
