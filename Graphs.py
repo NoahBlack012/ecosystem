@@ -7,6 +7,8 @@ import numpy as np
 from Sim import sim
 import random
 
+import json
+
 """
 EX
 {'cycle': 67, 'pop': 0, 'animals': {'speed': [], 'range': []}}
@@ -15,29 +17,34 @@ class graphs:
     """Class to manage graphing the simulation"""
     def __init__(self):
         self.cycles = 100
-        self.sim = sim(15, self.cycles)
+        self.sim = sim(5, self.cycles)
         print ("Running the simulation...")
-        self.sim.run()
+        #self.sim.run()
         print ("Simulation finished")
-        self.data = self.sim.datasets
+        with open('data.json') as f:
+            data = json.load(f)
+        self.data = data[:-1]
         self.data.pop()
 
     def plot_animal_attributes(self):
         """
         Plot animal attributes
         """
+
+        #Create graph
         self.animal_fig, self.animal_ax = plt.subplots(figsize=(5, 5))
+
+        #Set labels and axis for graph
         self.animal_ax.set_xlabel("Speed")
         self.animal_ax.set_ylabel("Range")
         self.animal_ax.set_xlim(-1, 11)
         self.animal_ax.set_ylim(-1, 11)
-        #Append speed and range to arrays above in animate functions
-        #Ex: https://stackoverflow.com/questions/42722691/python-matplotlib-update-scatter-plot-from-a-function
+
         x_data = []
         y_data = []
         sizes = []
 
-        scatter = self.animal_ax.scatter(0, 0, c="#ffffff")
+        scatter = self.animal_ax.scatter(-2, -2, c="#ff0000")
 
         #Create (x, y) coordinates
         def create_coordinates(x, y):
@@ -62,11 +69,10 @@ class graphs:
             plt.title(f"Cycle: {data['cycle']}      Population: {data['pop']}")
             points = create_coordinates(x_data, y_data)
             sizes = create_sizes(points)
-            scatter = self.animal_ax.scatter(x_data, y_data, s=sizes, c="#ff0000")
-            try:
-                scatter.set_offsets(points)
-            except ValueError:
-                pass
+
+            #Update the graph
+            scatter.set_offsets(points)
+            scatter.set_sizes(sizes)
             return scatter,
 
         line_animation = animation.FuncAnimation(
@@ -74,7 +80,7 @@ class graphs:
             blit=True, save_count=len(self.data)
         )
 
-        writergif = animation.PillowWriter(fps=15)
+        writergif = animation.PillowWriter(fps=5)
         line_animation.save('graph.gif',writer=writergif)
         plt.close(self.animal_fig)
 
@@ -93,41 +99,13 @@ class graphs:
         """
         if cycles[-1] + 1 < self.cycles:
             populations.append(0)
-            cycles.append(cycles[-1]+1)
+            cycles.append(cycles[-1] + 1)
 
         self.pop_ax.plot(cycles, populations)
 
         self.pop_fig.savefig("population.png")
         plt.close(self.pop_fig)
 
-
-    # def test(self):
-    #     fig, ax = plt.subplots()
-    #     ax.set_xlabel("Speed")
-    #     ax.set_ylabel("Range")
-    #     ax.set_xlim(0, 10)
-    #     ax.set_ylim(0, 10)
-    #
-    #     x_data = []
-    #     y_data = []
-    #     scatter = ax.scatter(0, 0)
-    #
-    #     def create_coordinates(x, y):
-    #         points = []
-    #         for n, x_coor in enumerate(x):
-    #             coor = (x_coor, y[n])
-    #             points.append(coor)
-    #         return points
-    #
-    #     def animate(i):
-    #         x_data = [random.randint(1, 10) for i in range(5)]
-    #         y_data = [random.randint(1, 10) for i in range(5)]
-    #         points = create_coordinates(x_data, y_data)
-    #         scatter.set_offsets(points)
-    #         return scatter,
-    #
-    #     ani = animation.FuncAnimation(fig, func=animate, frames=np.arange(0, 10, 0.1), interval=10)
-    #     plt.show()
 
 if __name__ == '__main__':
     g = graphs()

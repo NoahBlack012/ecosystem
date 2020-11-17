@@ -2,10 +2,10 @@ from Nqueue import nqueue
 import random
 class animal:
     """Class to manage the animal in the simulation"""
-    def __init__(self, x, y, range, speed):
+    def __init__(self, x, y, animal_range, speed):
         self.x = x
         self.y = y
-        self.range = range
+        self.animal_range = animal_range
         self.speed = speed
         self.hunger = 10
         self.food_near = []
@@ -63,41 +63,54 @@ class animal:
     def reproduce(self, restricted_spots, length, population):
         x_interval = 1
         y_interval = 0
-        while True:
-            new_x = self.x + x_interval
-            new_y = self.y + y_interval
-            if new_x > length:
-                new_x = 1
-            if new_y > length:
-                new_y = 1
-            try:
-                if restricted_spots[new_x] != new_y:
-                    break
-            except KeyError as e:
-                break
-            if x_interval % 2 == 0:
-                x_interval += 1
-            else:
-                y_interval += 1
-        if population > 10:
-            mutation_chance = 50
-        elif population < 7 and population > 3:
-            mutation_chance = 20
-        else:
-            mutation_chance = 5
-        speed_rand = random.randint(1, mutation_chance)
-        if speed_rand == 1:
-            speed = random.randint(1, 5)
-        else:
-            speed = self.speed
 
-        range_rand = random.randint(1, mutation_chance)
-        if range_rand == 1:
-            range = random.randint(5, 10)
-        else:
-            range = self.range
-        new_animal = animal(new_x, new_y, range, speed)
-        return new_animal
+        new_animals = []
+
+        for i in range(2):
+            while True:
+                new_x = self.x + x_interval
+                new_y = self.y + y_interval
+                if new_x > length:
+                    new_x = 1
+                if new_y > length:
+                    new_y = 1
+                try:
+                    if restricted_spots[new_x] != new_y:
+                        break
+                except KeyError as e:
+                    break
+                if x_interval % 2 == 0:
+                    x_interval += 1
+                else:
+                    y_interval += 1
+
+
+            ###Create the attributes of the new animals###
+            if population > 10:
+                mutation_chance = 50
+            elif population < 7 and population > 3:
+                mutation_chance = 20
+            else:
+                mutation_chance = 5
+            speed_rand = random.randint(1, mutation_chance)
+            if speed_rand == 1:
+                speed = random.randint(1, 5)
+            else:
+                speed = self.speed
+
+            range_rand = random.randint(1, mutation_chance)
+            if range_rand == 1:
+                animal_range = random.randint(5, 10)
+            else:
+                animal_range = self.animal_range
+            #############################################
+
+            restricted_spots[new_x] = new_y
+
+            new_animal = animal(new_x, new_y, animal_range, speed)
+            new_animals.append(new_animal)
+
+        return new_animals
 
     def eat(self, foods):
         x, y = -1, -1
@@ -120,8 +133,8 @@ class animal:
 
     def find_food(self, board):
         self.searching_for_food = False
-        x_area = range(self.x - int(self.range), self.x + int(self.range))
-        y_area = range(self.y - int(self.range), self.y + int(self.range))
+        x_area = range(self.x - int(self.animal_range), self.x + int(self.animal_range))
+        y_area = range(self.y - int(self.animal_range), self.y + int(self.animal_range))
         area = [x_area, y_area]
         for x in x_area:
             for y in y_area:

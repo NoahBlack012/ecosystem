@@ -4,6 +4,8 @@ import numpy as np
 import random
 from Nqueue import nqueue
 
+import json
+
 class sim:
     """Class to run the simulation"""
     def __init__(self, pop, reps):
@@ -55,7 +57,7 @@ class sim:
                 if y == restricted_spots[j]:
                     y += 1
             restricted_spots[x] = y
-            speed = random.randint(1, 5)
+            speed = random.randint(1, 10)
             range = random.randint(5, 10)
             self.animals.append(animal(x, y, range, speed))
 
@@ -96,10 +98,6 @@ class sim:
             for food in self.foods:
                 self.board[food.x][food.y] = 1
             food = 0
-            # for j in self.board:
-            #     for i in j:
-            #         if i == 1:
-            #             food += 1
 
 
             new_animal_array = []
@@ -128,10 +126,12 @@ class sim:
                 if animal.hunger > 20:
                     animal.hunger = 10
                     self.get_restricted_spots()
-                    new_animal = animal.reproduce(self.restricted_spots, self.WIDTH, len(self.animals))
+                    new_animals = animal.reproduce(self.restricted_spots, self.WIDTH, len(self.animals))
                     print ("reproduce")
-                    new_animal.find_food(self.board)
-                    new_animal_array.append(new_animal)
+
+                    for new_animal in new_animals:
+                        new_animal.find_food(self.board)
+                        new_animal_array.append(new_animal)
 
                 animal.hunger -= 1
                 new_animal_array.append(animal)
@@ -143,23 +143,43 @@ class sim:
             self.cycles += 1
             print (self.cycles)
 
+            data = {}
             animals_data = {}
             animals_data["speed"] = []
             animals_data["range"] = []
+            animals_data["info"] = []
+
             for animal in self.animals:
                 animals_data["speed"].append(animal.speed)
-                animals_data["range"].append(animal.range)
+                animals_data["range"].append(animal.animal_range)
 
-            data = {
-                "cycle": self.cycles,
-                "pop": len(self.animals),
-                "animals": animals_data
-            }
+                animal_info = {
+                    "x": animal.x,
+                    "y": animal.y,
+                    "hunger": animal.hunger
+                }
+                animals_data["info"].append(animal_info)
+
+            food_data = []
+            for food in self.foods:
+                food = {
+                    "x": food.x,
+                    "y": food.y
+                }
+                food_data.append(food)
+
+            data["cycle"] = self.cycles
+            data["pop"] = len(self.animals)
+            data["animals"] = animals_data
+            data["food_data"] = food_data
+
             self.datasets.append(data)
 
 
 if __name__ == '__main__':
-    s = sim(10, 100)
+    s = sim(20, 200)
     s.run()
     for data in s.datasets:
         print (data)
+    with open("data.json", "w") as f:
+        json.dump(s.datasets, f)
