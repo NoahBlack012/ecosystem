@@ -6,8 +6,8 @@ import json
 class display:
     def __init__(self):
         pygame.init()
-        self.WIDTH, self.HEIGHT = 600, 600
-        self.DISPLAY_FACTOR = 30
+        self.WIDTH, self.HEIGHT = 600, 700
+        self.DISPLAY_FACTOR = 25
         self.screen = pygame.display.set_mode(
             (self.WIDTH, self.HEIGHT)
         )
@@ -19,6 +19,9 @@ class display:
         self.BLUE = (0, 0, 255)
         self.RED = (255, 0, 0)
         self.BLACK = (0, 0, 0)
+
+        self.font = pygame.font.Font('freesansbold.ttf', 40)
+        self.font_display_y = 650
 
         with open("data.json") as f:
             self.data = json.load(f)
@@ -36,6 +39,15 @@ class display:
             y = food["y"] * self.DISPLAY_FACTOR
             pygame.draw.rect(self.screen, self.BLUE, (x, y, self.DISPLAY_FACTOR, self.DISPLAY_FACTOR))
 
+    def write_cycle(self, cycle):
+        msg = f"Cycle: {cycle}"
+        rendered_item = self.font.render(msg, False, self.BLACK)
+        self.screen.blit(rendered_item, (40, self.font_display_y))
+
+    def write_pop(self, pop):
+        msg = f"Population: {pop}"
+        rendered_item = self.font.render(msg, False, self.BLACK)
+        self.screen.blit(rendered_item, (300, self.font_display_y))
 
     def run(self):
         loop = 0
@@ -65,8 +77,11 @@ class display:
 
             self.screen.fill(self.WHITE)
             ###Draw Items###
+            pygame.draw.rect(self.screen, self.BLACK, (0, 0, 600, 500), 1)
             self.draw_food(data["food_data"])
             self.draw_animals(data["animals"]["info"])
+            self.write_cycle(data["cycle"])
+            self.write_pop(data["pop"])
 
             pygame.display.flip()
             loop += 1
