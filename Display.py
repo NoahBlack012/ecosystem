@@ -63,25 +63,18 @@ class display:
                     if event.key == pygame.q:
                         sys.exit()
 
-                    #Pause the display
-                    # if event.key == pygame.p:
-                    #     while True:
-                    #         for event in pygame.event.get():
-                    #             if event.type == pygame.QUIT:
-                    #                 sys.exit()
-                    #             if event.type == pygame.KEYDOWN:
-                    #                 if event.key == pygame.q:
-                    #                     sys.exit()
-                    #                 if event.key == pygame.p:
-                    #                     break
-
+            #Fill the screen before drawing new items
             self.screen.fill(self.WHITE)
+
             ###Draw Items###
-            pygame.draw.rect(self.screen, self.BLACK, (0, 0, 600, 500), 1)
+            #Create a border for the simulation area
+            pygame.draw.rect(self.screen, self.BLACK, (0, 0, 600, 600), 1)
+
             self.draw_food(data["food_data"])
             self.draw_animals(data["animals"]["info"])
             self.write_cycle(data["cycle"])
             self.write_pop(data["pop"])
+            ###
 
             pygame.display.flip()
             loop += 1

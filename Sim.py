@@ -179,7 +179,7 @@ class sim:
 if __name__ == '__main__':
     s = sim(20, 200)
     s.run()
-    for data in s.datasets:
-        print (data)
+    # for data in s.datasets:
+    #     print (data)
     with open("data.json", "w") as f:
         json.dump(s.datasets, f)

@@ -17,10 +17,8 @@ class graphs:
     """Class to manage graphing the simulation"""
     def __init__(self):
         self.cycles = 100
-        self.sim = sim(5, self.cycles)
-        print ("Running the simulation...")
-        #self.sim.run()
-        print ("Simulation finished")
+        #self.sim = sim(5, self.cycles)
+        print ("Retrieving simulation data...")
         with open('data.json') as f:
             data = json.load(f)
         self.data = data[:-1]

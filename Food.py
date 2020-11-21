@@ -7,4 +7,5 @@ class food:
 
 
 if __name__ == '__main__':
-    f = food()
+    f = food(1, 1)
+    print (f.type)

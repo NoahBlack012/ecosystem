@@ -177,7 +177,7 @@ class animal:
 
 
     def find_best_path(self, foodx, foody):
-        comps = 0
+        loops = 0
         q = nqueue()
         q.add("")
         put = ""
@@ -186,16 +186,21 @@ class animal:
             add = q.de_q()
             for i in ["L", "R", "U", "D"]:
                 put = add + i
+
+                #If the current series of moves is valid, add it to the queue
                 if self.valid_path(put, self.x, self.y):
                     q.add(put)
+
+            #If an end is found, exit the loop
             if self.end_found(put, self.x, self.y, foodx, foody):
                 break
-            comps += 1
-            if comps > 30000:
+            loops += 1
+            if loops > 30000:
                 break
-        q = q.get_q()[0]
+        #q = q.get_q()[0]
+        #Add the current route to the q
         new_q = nqueue()
-        new_q.add(q)
+        new_q.add(put)
         self.move_queue = new_q
 
 
