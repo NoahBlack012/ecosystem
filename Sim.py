@@ -1,9 +1,9 @@
 from Food import food
 from Animal import animal
 import numpy as np
-import random
 from Nqueue import nqueue
 
+import random
 import json
 
 class sim:
@@ -108,7 +108,7 @@ class sim:
                     print ("📔📔📔Searching for food")
                     animal.find_food(self.board)
                     if animal.food_near != []:
-                        animal.find_best_path(animal.food_near[0], animal.food_near[1])
+                        animal.find_best_path(animal.food_near[0][0], animal.food_near[0][1])
                     else:
                         animal.move_queue = nqueue()
                         for i in range(animal.speed):
@@ -123,8 +123,10 @@ class sim:
                     self.foods, animal.searching_for_food = animal.eat(self.foods)
                     animal.move_to_food()
 
-                if animal.hunger > 20:
-                    animal.hunger = 10
+                if animal.hunger > 15:
+                    animal.hunger = int(animal.hunger / 2)
+                    if animal.hunger < 10:
+                        animal.hunger = 10
                     self.get_restricted_spots()
                     new_animals = animal.reproduce(self.restricted_spots, self.WIDTH, len(self.animals))
                     print ("reproduce")

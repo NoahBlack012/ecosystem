@@ -118,7 +118,7 @@ class animal:
             if food.x == self.x and food.y == self.y:
                 print (f"📗📗📗{self} yum x: {self.x} y:{self.y}")
                 self.searching_for_food = True
-                self.hunger += 10
+                self.hunger += food.type
                 x = food.x
                 y = food.y
                 self.food_near = []
@@ -139,7 +139,7 @@ class animal:
         for x in x_area:
             for y in y_area:
                 try:
-                    if board[x][y] == 1:
+                    if board[x][y] == 1 and x > 0 and y > 0:
                         food = [x, y]
                         self.food_near.append(food)
                 except IndexError as e:
@@ -193,14 +193,17 @@ class animal:
 
             #If an end is found, exit the loop
             if self.end_found(put, self.x, self.y, foodx, foody):
+                q.add(put)
+                moves = put
                 break
             loops += 1
             if loops > 30000:
+                self.move_queue = None
+                moves = ""
                 break
-        #q = q.get_q()[0]
         #Add the current route to the q
         new_q = nqueue()
-        new_q.add(put)
+        new_q.add(moves)
         self.move_queue = new_q
 
 
