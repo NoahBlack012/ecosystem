@@ -101,6 +101,17 @@ class graphs:
 
         self.pop_ax.plot(cycles, populations)
 
+
+        #Create the average line
+        y_average = 0
+        for i in populations:
+            y_average += i
+        y_average = y_average / len(populations)
+        y_average = [y_average] * len(populations)
+
+        x_values = np.arange(0, len(populations), 1)
+        self.pop_ax.plot(x_values, y_average, label='Mean', linestyle='--')
+
         self.pop_fig.savefig("population.png")
         plt.close(self.pop_fig)
 
