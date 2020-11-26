@@ -60,7 +60,7 @@ class animal:
             elif move == "R":
                 self.x += 1
 
-    def reproduce(self, restricted_spots, length, population):
+    def reproduce(self, restricted_spots, size, population):
         x_interval = 1
         y_interval = 0
 
@@ -68,21 +68,13 @@ class animal:
 
         for i in range(2):
             while True:
-                new_x = self.x + x_interval
-                new_y = self.y + y_interval
-                if new_x > length:
-                    new_x = 1
-                if new_y > length:
-                    new_y = 1
+                new_x = random.randint(1, size)
+                new_y = random.randint(1, size)
                 try:
                     if restricted_spots[new_x] != new_y:
                         break
                 except KeyError as e:
                     break
-                if x_interval % 2 == 0:
-                    x_interval += 1
-                else:
-                    y_interval += 1
 
 
             ###Create the attributes of the new animals###

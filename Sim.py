@@ -123,10 +123,8 @@ class sim:
                     self.foods, animal.searching_for_food = animal.eat(self.foods)
                     animal.move_to_food()
 
-                if animal.hunger > 15:
+                if animal.hunger > 20:
                     animal.hunger = int(animal.hunger / 2)
-                    if animal.hunger < 10:
-                        animal.hunger = 10
                     self.get_restricted_spots()
                     new_animals = animal.reproduce(self.restricted_spots, self.WIDTH, len(self.animals))
                     print ("reproduce")
