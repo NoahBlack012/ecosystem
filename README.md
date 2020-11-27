@@ -9,7 +9,6 @@ This is a basic simulation of an ecosystem using Python
 
 Animals are the focus of the simulation. They move in order to eat food, survive, and reproduce
 
-All attributes and methods related to the animal can be found in the Animal.py file
 
 #### Attributes
 Here are all the attributes of the animals in the simulation:
@@ -52,8 +51,10 @@ To change this go to the bottom of the Sim.py file and change the arguments when
 
 After the simulation is complete, the data from the simulation will be written to the data.json file
 
+**NOTE: Running the Sim.py file will rewrite the data.json file and previous data will be lost**
+
 ## Graphing the simulation
-**See Graphs.py file***
+**See Graphs.py file**
 
 Graphs are generated using matplotlib
 
