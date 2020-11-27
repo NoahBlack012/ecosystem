@@ -1,7 +1,7 @@
 from Food import food
 from Animal import animal
 import numpy as np
-from Nqueue import nqueue
+from Queue import queue
 
 import random
 import json
@@ -110,7 +110,7 @@ class sim:
                     if animal.food_near != []:
                         animal.find_best_path(animal.food_near[0][0], animal.food_near[0][1])
                     else:
-                        animal.move_queue = nqueue()
+                        animal.move_queue = queue()
                         for i in range(animal.speed):
                             animal.move_queue.add(random.choice(["L", "R", "U", "D"]))
                         animal.searching_for_food = True
@@ -179,7 +179,5 @@ class sim:
 if __name__ == '__main__':
     s = sim(20, 200)
     s.run()
-    # for data in s.datasets:
-    #     print (data)
     with open("data.json", "w") as f:
         json.dump(s.datasets, f)

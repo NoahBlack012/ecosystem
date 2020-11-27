@@ -1,4 +1,4 @@
-class nqueue:
+class queue:
     def __init__(self):
         self.q = []
 
@@ -18,4 +18,4 @@ class nqueue:
         return self.q[-1]
 
 if __name__ == '__main__':
-    q = nqueue()
+    q = queue()

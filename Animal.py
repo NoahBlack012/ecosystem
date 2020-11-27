@@ -1,4 +1,4 @@
-from Nqueue import nqueue
+from Queue import queue
 import random
 class animal:
     """Class to manage the animal in the simulation"""
@@ -10,7 +10,7 @@ class animal:
         self.hunger = 10
         self.food_near = []
         self.searching_for_food = True
-        self.move_queue = nqueue()
+        self.move_queue = queue()
         self.moves = ""
 
     def move_to_food(self):
@@ -48,7 +48,7 @@ class animal:
                 move = random.choice(["U", "D", "L", "R"])
                 self.searching_for_food = True
 
-            self.move_queue = nqueue()
+            self.move_queue = queue()
             self.move_queue.add(new_q)
 
             if move == "U":
@@ -114,7 +114,7 @@ class animal:
                 x = food.x
                 y = food.y
                 self.food_near = []
-                self.move_queue = nqueue()
+                self.move_queue = queue()
                 break
         new_foods = []
         for food in foods:
@@ -170,7 +170,7 @@ class animal:
 
     def find_best_path(self, foodx, foody):
         loops = 0
-        q = nqueue()
+        q = queue()
         q.add("")
         put = ""
         add = []
@@ -194,10 +194,9 @@ class animal:
                 moves = ""
                 break
         #Add the current route to the q
-        new_q = nqueue()
+        new_q = queue()
         new_q.add(moves)
         self.move_queue = new_q
-
 
 if __name__ == '__main__':
     a = animal(5, 5, 5, 5)

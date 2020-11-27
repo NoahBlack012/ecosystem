@@ -17,7 +17,6 @@ class graphs:
     """Class to manage graphing the simulation"""
     def __init__(self):
         self.cycles = 100
-        #self.sim = sim(5, self.cycles)
         print ("Retrieving simulation data...")
         with open('data.json') as f:
             data = json.load(f)
@@ -79,7 +78,7 @@ class graphs:
         )
 
         writergif = animation.PillowWriter(fps=5)
-        line_animation.save('graph.gif',writer=writergif)
+        line_animation.save('animals.gif',writer=writergif)
         plt.close(self.animal_fig)
 
     def plot_population(self):
