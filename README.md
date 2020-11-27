@@ -6,6 +6,7 @@ This is a basic simulation of an ecosystem using Python
 
 ### Animals
 **See Animal.py file**
+
 Animals are the focus of the simulation. They move in order to eat food, survive, and reproduce
 
 All attributes and methods related to the animal can be found in the Animal.py file
@@ -17,7 +18,8 @@ Here are all the attributes of the animals in the simulation:
 - Hunger (How much energy an animal has, once this hits zero the animal dies)
 
 #### Movement
-**See find_food and find_best_path functions in Animal.py file**
+**See find_food, find_best_path, and move_to_food functions in Animal.py file**
+
 The animal goes through a number of steps before it makes a move
 
 - Find nearby food
@@ -26,6 +28,7 @@ The animal goes through a number of steps before it makes a move
 
 #### Eating and Reproducing
 **See eat and reproduce functions in Animal.py file**
+
 Each turn the animal checks if it has reached food, if it has it eats it.
 - The animal gains energy from eating food (Amount corresponding to the food type)
 - If the animals hunger attribute is greater than 19, two new animals are created that inherit the animals attribute unless a mutation occurs
@@ -33,6 +36,7 @@ Each turn the animal checks if it has reached food, if it has it eats it.
 
 ### Food
 **See Food.py file**
+
 The food in the simulation is the other main attribute, it is stationary and animals eat it to survive
 
 #### Attributes
@@ -40,8 +44,9 @@ The food in the simulation is the other main attribute, it is stationary and ani
 - Type (How much energy the food gives the animal)
 
 ## Running the simulation
-To run the simulation run *python Sim.py* in the command prompt
-By default, the simulation starts with 20 animals and repeats for 200 cycles
+To run the simulation run *python Sim.py* in the command prompt.
+
+By default, the simulation starts with 20 animals and repeats for 200 cycles.
 
 To change this go to the bottom of the Sim.py file and change the arguments when initializing the sim class. The first argument is the initial number of animals, the second is the number of cycles the simulation will repeat for
 
@@ -53,6 +58,7 @@ After the simulation is complete, the data from the simulation will be written t
 Graphs are generated using matplotlib
 
 To graph the simulation, run *python Graphs.py* in the command prompt
+
 This will generate 2 graphs using simulation data from the data.json file. One of the overall population over the simulation and one of the attributes of the animals over the simulation. These can be viewed in the population.png file and the animals.gif file
 
 All graphing is handled in the Graphs.py file
