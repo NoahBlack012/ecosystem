@@ -22,7 +22,7 @@ Here are all the attributes of the animals in the simulation:
 The animal goes through a number of steps before it makes a move
 
 - Find nearby food
-- Create a path to the nearest food (Using the Breadth First Search algorithm)
+- Create a path to the nearest food (Using the A* pathfinding algorithm)
 - Move to the food turn by turn until it reaches the food
 
 #### Eating and Reproducing
@@ -78,5 +78,4 @@ The will create a simple user interface that shows the animals represented as re
 ## Queue Class
 **See Queue.py**
 
-The queue object is used in the Breadth First Search to find the animal's best path to food
-It is a list like data structure, where data is added at the start and removed at the back
+It is a first in first out data structure, where data is added at the start and removed at the back
