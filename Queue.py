@@ -17,5 +17,8 @@ class queue:
     def get_last(self):
         return self.q[-1]
 
+    def set(self, ls):
+        self.q = ls
+
 if __name__ == '__main__':
     q = queue()

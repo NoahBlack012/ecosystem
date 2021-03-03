@@ -100,7 +100,6 @@ class graphs:
 
         self.pop_ax.plot(cycles, populations)
 
-
         #Create the average line
         y_average = 0
         for i in populations:

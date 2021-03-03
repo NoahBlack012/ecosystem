@@ -74,11 +74,12 @@ class sim:
         self.create_initial_population(range(self.initial_pop))
         self.create_food(range(self.food_amount))
 
+        ## Repeat the simulation for the number of cycles specified ##
         while self.cycles < self.REPETITIONS:
             print (f"📘📘📘Population: {len(self.animals)}")
             print (f"📘📘📘Food: {len(self.foods)}")
 
-            #If there are no more animals
+            #If there are no more animals, end the simulation
             if len(self.animals) < 1:
                 break
 
@@ -90,7 +91,9 @@ class sim:
                 for food in self.foods:
                     self.board[food.x][food.y] = 1
 
+                #If an animal has not found food,
                 #Get animals to find new food when food is added
+
                 new_animal_array = []
                 for animal in self.animals:
                     if not animal.food_near:
@@ -98,6 +101,7 @@ class sim:
             for food in self.foods:
                 self.board[food.x][food.y] = 1
             food = 0
+            ###############################################################
 
 
             new_animal_array = []
@@ -108,7 +112,7 @@ class sim:
                     print ("📔📔📔Searching for food")
                     animal.find_food(self.board)
                     if animal.food_near != []:
-                        animal.find_best_path(animal.food_near[0][0], animal.food_near[0][1])
+                        animal.find_best_path(animal.food_near[0], self.WIDTH, self.HEIGHT)
                     else:
                         animal.move_queue = queue()
                         for i in range(animal.speed):
@@ -143,12 +147,16 @@ class sim:
             self.cycles += 1
             print (self.cycles)
 
+            ## Create a new dataset for the cycle ##
             data = {}
             animals_data = {}
+
+            ## Set all the data categories to be an empty array ##
             animals_data["speed"] = []
             animals_data["range"] = []
             animals_data["info"] = []
 
+            ## Record the data of each animal ##
             for animal in self.animals:
                 animals_data["speed"].append(animal.speed)
                 animals_data["range"].append(animal.animal_range)
@@ -160,6 +168,7 @@ class sim:
                 }
                 animals_data["info"].append(animal_info)
 
+            ## Record the data of each food ##
             food_data = []
             for food in self.foods:
                 food = {
@@ -168,16 +177,18 @@ class sim:
                 }
                 food_data.append(food)
 
+            ## Record other data points ##
             data["cycle"] = self.cycles
             data["pop"] = len(self.animals)
             data["animals"] = animals_data
             data["food_data"] = food_data
 
+            ## Add the cycle's dataset to the simulation's dataset ##
             self.datasets.append(data)
 
 
 if __name__ == '__main__':
     s = sim(20, 200)
     s.run()
-    with open("data.json", "w") as f:
-        json.dump(s.datasets, f)
+    #with open("data.json", "w") as f:
+        #json.dump(s.datasets, f)

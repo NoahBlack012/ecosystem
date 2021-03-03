@@ -1,5 +1,7 @@
 from Queue import queue
 import random
+from PathFind import Node, a_star
+
 class animal:
     """Class to manage the animal in the simulation"""
     def __init__(self, x, y, animal_range, speed):
@@ -168,34 +170,13 @@ class animal:
             return False
 
 
-    def find_best_path(self, foodx, foody):
-        loops = 0
-        q = queue()
-        q.add("")
-        put = ""
-        add = []
-        while True:
-            add = q.de_q()
-            for i in ["L", "R", "U", "D"]:
-                put = add + i
+    def find_best_path(self, food, width, height):
+        # Find the best path using the a star algorithm
+        path = a_star(width, height, [self.x, self.y], food)
 
-                #If the current series of moves is valid, add it to the queue
-                if self.valid_path(put, self.x, self.y):
-                    q.add(put)
-
-            #If an end is found, exit the loop
-            if self.end_found(put, self.x, self.y, foodx, foody):
-                q.add(put)
-                moves = put
-                break
-            loops += 1
-            if loops > 30000:
-                self.move_queue = None
-                moves = ""
-                break
         #Add the current route to the q
         new_q = queue()
-        new_q.add(moves)
+        new_q.add(path)
         self.move_queue = new_q
 
 if __name__ == '__main__':
